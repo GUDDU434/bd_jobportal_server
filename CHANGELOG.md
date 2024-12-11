@@ -6,7 +6,8 @@
 
     - Added all the Initial file and folder structure for the project.
     - Created route to generate result from gemini api.
-
-### FIXED
-
-### CHANGED
+    - Added [Database Config](./config/db.js) file for database connection.
+    - Added [Job Controller](./controllers/job.controller.js) to add, get and remove from database.
+    - Added [Job Routes](./routes/job.routes.js) to difine all the routes path for job apis.
+    - Created [Job Model](./modal/jobs.modal.js) for job schema.
+    
