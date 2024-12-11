@@ -1,29 +1,41 @@
 // Import the necessary modules
+const {
+  GoogleGenerativeAI,
+} = require("@google/generative-ai");
 const { default: axios } = require("axios");
 const Job = require("../modal/jobs.modal");
 
 const getJobRecomendation = async (req, res) => {
+  const { prompt } = req.body;
+
+  const apiKey = process.env.GEMINI_API_KEY;
+  const genAI = new GoogleGenerativeAI(apiKey);
+
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash-exp",
+    systemInstruction:
+      '1. **Input Validation**:\n   - Check if the user input is related to a job search query (e.g., it contains keywords like "jobs," "developer," "hiring," or a specific job title and location).\n   - If the input is unrelated, respond with an error message:\n     ```json\n     { "error": "Invalid input. Please provide a job-related query." }\n     ```\n\n2. **Process the Query**:\n   - If the input is valid, proceed to fetch job-related information based on the query.\n\n3. **Response Format**:\n   - The response should be in JSON format as an array of objects. Minimum 10 objects.\n   - Each object must contain the following details:\n     - `title`: The job title.\n     - `company`: The name of the hiring company.\n     - `location`: The job location.\n     - `description`: A brief description of the job role.\n',
+  });
+
+  const generationConfig = {
+    temperature: 1,
+    topP: 0.95,
+    topK: 40,
+    maxOutputTokens: 8192,
+    responseMimeType: "application/json",
+  };
+
   try {
-    const { prompt } = req.body;
-    // let result = await model.generateContent(prompt);
-    // result = result.response.text();
+    const chatSession = model.startChat({
+      generationConfig,
+    });
 
-    let result1 = await axios.get(
-      "https://www.googleapis.com/customsearch/v1",
-      {
-        params: {
-          key: process.env.GOOGLE_SEARCH_API_KEY,
-          cx: process.env.GOOGLE_SEARCH_ENGINE_ID,
-          q: prompt,
-        },
-      }
-    );
+    const result = await chatSession.sendMessage(prompt);
+    let responseJson = JSON.parse(result.response.text());
 
-    result1 = result1.data;
-
-    res.status(200).send({ data: result1, message: "Success", code: 200 });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(200).send(responseJson);
+  } catch (err) {
+    res.status(500).send({ error: err });
   }
 };
 

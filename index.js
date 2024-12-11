@@ -1,6 +1,3 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai"); //"@google/generative-ai";
-const genAI = new GoogleGenerativeAI(process.env.Gemini_API_Key);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
