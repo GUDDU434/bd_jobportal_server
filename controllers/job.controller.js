@@ -1,8 +1,5 @@
 // Import the necessary modules
-const {
-  GoogleGenerativeAI,
-} = require("@google/generative-ai");
-const { default: axios } = require("axios");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 const Job = require("../modal/jobs.modal");
 
 const getJobRecomendation = async (req, res) => {
@@ -63,7 +60,11 @@ const bookmarkJob = async (req, res) => {
 // Get all bookmarked jobs
 const getBookmarkedJobs = async (req, res) => {
   try {
-    const jobs = await Job.find();
+    // Extract the IP address from the request
+    const ipAddress = req.ip || req.connection.remoteAddress;
+
+    // Find all jobs with the IP address
+    const jobs = await Job.find({ ipAddress });
     res
       .status(200)
       .json({ data: jobs, message: "Jobs fetched successfully", code: 200 });
