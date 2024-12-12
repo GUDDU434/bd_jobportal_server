@@ -29,7 +29,7 @@ app.use((req, res, next) => {
 
 // Check if the server is running
 app.get("/start", (req, res) => {
-  res.send("Welcome to BD JOB PORTAL SERVER v1.0.0 testing");
+  res.send("Welcome to BD JOB PORTAL SERVER v1.0.0 testing1");
 });
 
 // Job Portal API routes
