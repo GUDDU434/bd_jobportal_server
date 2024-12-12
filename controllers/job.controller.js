@@ -30,7 +30,13 @@ const getJobRecomendation = async (req, res) => {
     const result = await chatSession.sendMessage(prompt);
     let responseJson = JSON.parse(result.response.text());
 
-    res.status(200).send(responseJson);
+    if (Array.isArray(responseJson)) {
+      res
+        .status(200)
+        .send({ data: responseJson, status: 200, message: "Success" });
+    } else {
+      res.status(400).send({ ...responseJson, status: 400, message: "Error" });
+    }
   } catch (err) {
     res.status(500).send({ error: err });
   }
@@ -50,7 +56,7 @@ const bookmarkJob = async (req, res) => {
     res.status(201).json({
       data: savedJob,
       message: "Job bookmarked successfully",
-      code: 201,
+      status: 201,
     });
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -67,7 +73,7 @@ const getBookmarkedJobs = async (req, res) => {
     const jobs = await Job.find({ ipAddress });
     res
       .status(200)
-      .json({ data: jobs, message: "Jobs fetched successfully", code: 200 });
+      .json({ data: jobs, message: "Jobs fetched successfully", status: 200 });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -80,7 +86,7 @@ const removeBookmarkedJob = async (req, res) => {
     if (!job) return res.status(404).json({ message: "Job not found" });
     res
       .status(200)
-      .json({ message: "Job removed successfully", data: null, code: 200 });
+      .json({ message: "Job removed successfully", data: null, status: 200 });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
