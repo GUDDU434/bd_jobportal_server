@@ -1,6 +1,8 @@
 # CHANGELOGS
 
-## UNRELEASED
+## RELEASED v1.0.0 (2022-11-15)
+
+The following changes have been made:
 
 ### ADDED
 
